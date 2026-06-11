@@ -1,0 +1,109 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.tecnostore.pos.persistencia;
+
+import com.tecnostore.pos.modelo.Celular;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import com.tecnostore.pos.modelo.SistemaOperativo;
+import com.tecnostore.pos.modelo.CategoriaGama;
+/**
+ *
+ * @author Jorge Gómez
+ */
+public class CelularDAO implements ICelularDAO {
+
+    @Override
+    public void insertar(Celular celular) throws SQLException {
+        String sql = "INSERT INTO celulares (marca, modelo, sistema_operativo, gama, precio, stock) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection con = ConexionDB.getInstancia().obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, celular.getMarca());
+            ps.setString(2, celular.getModelo());
+            ps.setString(3, celular.getSistemaOperativo().name());
+            ps.setString(4, celular.getCategoriaGama().name());
+            ps.setBigDecimal(5, celular.getPrecio());
+            ps.setInt(6, celular.getStock());
+            ps.executeUpdate();
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                if (keys.next()) {
+                    celular.setId(keys.getLong(1));
+                }
+            }
+        }
+    }
+
+    @Override
+    public Celular buscarPorId(Long id) throws SQLException {
+        String sql = "SELECT id, marca, modelo, sistema_operativo, gama, precio, stock FROM celulares WHERE id = ?";
+        try (Connection con = ConexionDB.getInstancia().obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setLong(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapearCelular(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<Celular> listarTodos() throws SQLException {
+        List<Celular> lista = new ArrayList<>();
+        String sql = "SELECT id, marca, modelo, sistema_operativo, gama, precio, stock FROM celulares";
+        try (Connection con = ConexionDB.getInstancia().obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                lista.add(mapearCelular(rs));
+            }
+        }
+        return lista;
+    }
+
+    @Override
+    public void actualizar(Celular celular) throws SQLException {
+        String sql = "UPDATE celulares SET marca=?, modelo=?, sistema_operativo=?, gama=?, precio=?, stock=? WHERE id=?";
+        try (Connection con = ConexionDB.getInstancia().obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, celular.getMarca());
+            ps.setString(2, celular.getModelo());
+            ps.setString(3, celular.getSistemaOperativo().name());
+            ps.setString(4, celular.getCategoriaGama().name());
+            ps.setBigDecimal(5, celular.getPrecio());
+            ps.setInt(6, celular.getStock());
+            ps.setLong(7, celular.getId());
+            ps.executeUpdate();
+        }
+    }
+
+    @Override
+    public void eliminar(Long id) throws SQLException {
+        String sql = "DELETE FROM celulares WHERE id = ?";
+        try (Connection con = ConexionDB.getInstancia().obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setLong(1, id);
+            ps.executeUpdate();
+        }
+    }
+
+    private Celular mapearCelular(ResultSet rs) throws SQLException {
+        Celular celular = new Celular();
+        celular.setId(rs.getLong("id"));
+        celular.setMarca(rs.getString("marca"));
+        celular.setModelo(rs.getString("modelo"));
+        celular.setSistemaOperativo(SistemaOperativo.valueOf(rs.getString("sistema_operativo").toUpperCase()));
+        celular.setCategoriaGama(CategoriaGama.valueOf(rs.getString("gama").toUpperCase()));
+        celular.setPrecio(rs.getBigDecimal("precio"));
+        celular.setStock(rs.getInt("stock"));
+        return celular;
+    }
+}
