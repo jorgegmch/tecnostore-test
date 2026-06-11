@@ -83,9 +83,9 @@ Celular registrado con ID: 1 | Gama asignada: ALTA
 1. Crear el archivo `src/config.properties` (no incluido en el repositorio por seguridad):
 
 ```properties
-db.url=jdbc:mysql://HOST:PUERTO/tecnostore_db?ssl-mode=REQUIRED
-db.user=USUARIO
-db.password=CONTRASENA
+db.url=jdbc:mysql://avnadmin:AVNS_gmcxjgewXbH0NN1kb9v@mysql-1c5173f3-gomezjorge-bfa9.b.aivencloud.com:24837/tecnostore_db?ssl-mode=REQUIRED
+db.user=avnadmin
+db.password=AVNS_gmcxjgewXbH0NN1kb9v
 ```
 
 2. Ejecutar el script `tecnostore_db.sql` en tu servidor MySQL para crear las tablas.
