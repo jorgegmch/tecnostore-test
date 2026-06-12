@@ -107,4 +107,3 @@ db.password=AVNS_gmcxjgewXbH0NN1kb9v
 ## Autor(es)
 
 - Jorge Gomez
-- Joel Martinez
