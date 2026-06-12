@@ -92,6 +92,10 @@ db.password=AVNS_gmcxjgewXbH0NN1kb9v
 
 3. El driver MySQL Connector/J 9.7.0 está incluido en `libs/`.
 
+## Link prompt Claude
+
+
+
 ## Tecnologías utilizadas
 
 - Java 17
