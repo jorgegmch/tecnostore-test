@@ -94,7 +94,7 @@ db.password=AVNS_gmcxjgewXbH0NN1kb9v
 
 ## Link prompt Claude
 
-
+https://claude.ai/share/08ab737c-2ff6-4c43-b42e-9367a905f4e6
 
 ## Tecnologías utilizadas
 
